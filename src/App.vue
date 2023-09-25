@@ -1,30 +1,12 @@
 <script>
 import { useQuery } from '@vue/apollo-composable'
-import gql from 'graphql-tag'
+import ALL_BOOKS_QUERY from './graphql/allBooks.query.gql'
+import ALL_AUTHORS_QUERY from './graphql/allAuthors.query.gql'
 
-const ALL_BOOKS_QUERY = gql`
-  query AllBooks {
-    allBooks {
-      id
-      title
-      rating
-    }
-  }
-`
-const ALL_AUTHORS_QUERY = gql`
-  query AllAuthors {
-    writers(limit: 100) {
-      edges {
-        id
-        name
-      }
-    }
-  }
-`
 export default {
   name: 'App',
   setup() {
-    const { result } = useQuery(ALL_AUTHORS_QUERY)
+    const { result } = useQuery(ALL_BOOKS_QUERY)
     console.log("RESULT")
     console.log(result)
     return { result }
@@ -37,16 +19,16 @@ export default {
   <header>
     <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
 
-    <!--<div>
+    <div>
        <p v-for="book in result.allBooks" :key="book.id">
         {{ book.title }}
       </p>
-    </div> -->
-    <div>
+    </div>
+    <!-- <div>
       <p v-for="writer in result.writers.edges" :key="writer.id">
         {{ writer.name }}
       </p>
-    </div>
+    </div> -->
   </header>
 </template>
 

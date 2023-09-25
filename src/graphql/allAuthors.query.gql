@@ -1,0 +1,8 @@
+query AllAuthors {
+    writers(limit: 100) {
+      edges {
+        id
+        name
+      }
+    }
+  }
