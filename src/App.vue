@@ -2,16 +2,19 @@
 import { useQuery } from '@vue/apollo-composable'
 import ALL_BOOKS_QUERY from './graphql/allBooks.query.gql'
 import EditRating from './components/EditRating.vue'
+import AddBook from './components/AddBook.vue'
 import { computed, ref } from 'vue'
 
 export default {
   name: 'App',
   components: {
     EditRating,
+    AddBook,
   },
   setup() {
     const searchTerm = ref('')
     const activeBook = ref(null) 
+    const showNewBookForm = ref(false)
     const { result, loading, error } = useQuery(
       ALL_BOOKS_QUERY,
       () => ({
@@ -19,12 +22,12 @@ export default {
       }),
       () => ({
         debounce: 500,
-        enabled: searchTerm.value.length > 2,
+        // enabled: searchTerm.value.length > 2,
       })
     )
     const books = computed(() => result.value?.allBooks ?? [])
 
-    return { books, searchTerm, loading, error, activeBook }
+    return { books, searchTerm, loading, error, activeBook, showNewBookForm }
   },
 }
 
@@ -32,6 +35,12 @@ export default {
 
 <template>
   <div>
+    <div>
+      <button v-if="!showNewBookForm" @click="showNewBookForm = true">
+        Add a new book
+      </button>
+      <AddBook v-if="showNewBookForm" :search="searchTerm" @closeForm="showNewBookForm = false" />
+    </div>
     <input type="text" v-model="searchTerm" />
     <p v-if="loading">Loading...</p>
     <p v-else-if="error">Something went wrong! Please try again</p>
@@ -46,8 +55,7 @@ export default {
       </p>
       <template v-else>
         <p v-for="book in books" :key="book.id">
-          <!-- Display rating to see what we're editing -->
-          {{ book.title }} - {{ book.rating }}
+          {{ book.title }} - {{ book.rating }} - {{ book.author }} - {{ book.year }}
           <button @click="activeBook = book">Edit rating</button>
         </p>
       </template>
