@@ -1,16 +1,16 @@
 <script>
 import { useQuery } from '@vue/apollo-composable'
 import ALL_BOOKS_QUERY from './graphql/allBooks.query.gql'
-import EditRating from './components/EditRating.vue'
 import AddBook from './components/AddBook.vue'
 import { computed, ref } from 'vue'
+import EditBook from './components/EditBook.vue'
 
 export default {
   name: 'App',
   components: {
-    EditRating,
     AddBook,
-  },
+    EditBook
+},
   setup() {
     const searchTerm = ref('')
     const activeBook = ref(null) 
@@ -46,17 +46,23 @@ export default {
     <p v-else-if="error">Something went wrong! Please try again</p>
     <template v-else>
       <p v-if="activeBook">
-        Update "{{ activeBook.title }}" rating:
-        <EditRating
-          :initial-rating="activeBook.rating"
+        Update "{{ activeBook.title }}"
+        <div>
+          <EditBook
           :book-id="activeBook.id"
+          :initial-title="activeBook.title"
+          :initial-description="activeBook.description"
+          :initial-rating="activeBook.rating"
+          :initial-author="activeBook.author"
+          :initial-year="activeBook.year"
           @closeForm="activeBook = null"
         />
+        </div>
       </p>
       <template v-else>
         <p v-for="book in books" :key="book.id">
           {{ book.title }} - {{ book.rating }} - {{ book.author }} - {{ book.year }}
-          <button @click="activeBook = book">Edit rating</button>
+          <button @click="activeBook = book">Edit book</button>
         </p>
       </template>
     </template>
